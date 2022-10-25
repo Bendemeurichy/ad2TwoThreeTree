@@ -1,17 +1,9 @@
 package oplossing;
 
 import opgave.SearchTree;
-
 import java.util.Iterator;
 
 public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
-/*TODO: underlying datastructure :
-    -own linked list -> 1 root node best
-    -linked list -> best possibility linked list <Treenode<E>>, 2 children not possible
-    -hashmap -> slow search
-    -array ->fixed size, too much copy
-    -arraylist -> difficult rebalancing
- */
     private TreeNode<E> root= null;
 
     //search a specific E in the tree and return its node, return null if not found
@@ -158,9 +150,43 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                     replaceRoot.getParent().setKey2(replaceRoot.getKey1());
                     replaceRoot.getParent().setChild2(replaceRoot.getChild1());
                     replaceRoot.getParent().setChild3(replaceRoot.getChild2());
+                    replaceRoot.getChild1().setParent(replaceRoot.getParent());
+                    replaceRoot.getChild2().setParent(replaceRoot.getParent());
                 }
             } else {
-
+                TreeNode<E> nroot;
+                if(replaceRoot.getKey1().compareTo(replaceRoot.getParent().getKey1())<0){
+                    nroot = new TreeNode<>(replaceRoot.getParent().isRoot()?null:replaceRoot.getParent().getParent(),replaceRoot.getParent().getKey1());
+                    nroot.setChild1(replaceRoot);
+                    TreeNode<E> rchild=new TreeNode<>(nroot,replaceRoot.getParent().getKey2());
+                    nroot.setChild2(rchild);
+                    rchild.setChild1(replaceRoot.getParent().getChild2());
+                    rchild.setChild2(replaceRoot.getParent().getChild3());
+                    replaceRoot.setParent(nroot);
+                } else if (replaceRoot.getKey1().compareTo(replaceRoot.getParent().getKey2())>0){
+                    nroot = new TreeNode<>(replaceRoot.getParent().isRoot()?null:replaceRoot.getParent().getParent(),replaceRoot.getParent().getKey2());
+                    nroot.setChild2(replaceRoot);
+                    TreeNode<E> lchild=new TreeNode<>(nroot,replaceRoot.getParent().getKey1());
+                    nroot.setChild1(lchild);
+                    lchild.setChild1(replaceRoot.getParent().getChild1());
+                    lchild.setChild2(replaceRoot.getParent().getChild2());
+                    replaceRoot.setParent(nroot);
+                } else {
+                    nroot = new TreeNode<>(replaceRoot.getParent().isRoot()?null:replaceRoot.getParent().getParent(),replaceRoot.getKey1());
+                    TreeNode<E> rchild=new TreeNode<>(nroot,replaceRoot.getParent().getKey2());
+                    TreeNode<E> lchild=new TreeNode<>(nroot,replaceRoot.getParent().getKey1());
+                    nroot.setChild2(rchild);
+                    nroot.setChild1(lchild);
+                    lchild.setChild1(replaceRoot.getParent().getChild1());
+                    lchild.setChild2(replaceRoot.getChild1());
+                    rchild.setChild1(replaceRoot.getChild2());
+                    rchild.setChild2(replaceRoot.getParent().getChild3());
+                }
+                if(nroot.isRoot()){
+                    root=nroot;
+                } else {
+                    balance(nroot);
+                }
             }
         }
     @Override
