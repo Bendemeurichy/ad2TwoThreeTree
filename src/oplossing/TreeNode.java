@@ -74,6 +74,11 @@ public class TreeNode<E extends Comparable<E>> {
     }
 
     public boolean isleaf() {
-        return getChild1()==null && getChild2()==null && getChild3()==null;
+        if (size()==2){
+            return getChild1() == null && getChild2() == null && getChild3() == null;
+        } else {
+            return getChild1() == null && getChild2() == null;
+        }
     }
+
 }
