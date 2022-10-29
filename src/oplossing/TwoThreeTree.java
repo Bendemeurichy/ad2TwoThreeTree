@@ -264,7 +264,7 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                     parent.setKey2(parent.getChild2().getKey2());
                     parent.getChild2().setKey2(null);
                 }
-            } else { //TODO implement 5tree with 1 move  (g2 in notebook)
+            } else {
                 if (parent.getChild1() != null && parent.getChild1().size() == 2){
                     if (parent.getChild2() == null || parent.getChild2().isEmpty()){
                         parent.setChild2(new TreeNode<>(parent, parent.getKey2()));
@@ -320,7 +320,7 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                 parent.setKey1(parent.getChild1().getKey2());
                 parent.getChild1().setKey2(null);
             } else {
-                if (parent.getChild1() != null){
+                if (parent.getChild1() != null){ // if problem point is empty node, move children of empty node
                     parent.getChild1().setKey1(parent.getKey1());
                     parent.getChild1().setChild2(parent.getChild2().getChild1());
                     if (parent.getChild1().getChild2() != null){
@@ -341,10 +341,10 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
             if (parent.getChild2() == null || parent.getChild2().isEmpty()){
                 parent.getChild1().setKey2(parent.getKey1());
                 parent.setKey1(null);
-            } else {
+            } else { // make empty node as root of subtree size 2 and repeat balance with empty node as problem node
                 parent.getChild2().setKey2(parent.getChild2().getKey1());
                 parent.getChild2().setKey1(parent.getKey1());
-                if (parent.getChild1() != null){
+                if (parent.getChild1() != null){ // if problem node is empty and not null, move children as well
                     parent.getChild1().setKey1(parent.getChild2().getKey1());
                     parent.getChild1().setKey2(parent.getChild2().getKey2());
                 } else {
