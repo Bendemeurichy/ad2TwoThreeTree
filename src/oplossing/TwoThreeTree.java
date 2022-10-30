@@ -458,7 +458,9 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
             parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
         }
         parent.getChild1().setChild2(parent.getChild2().getChild1());
-        parent.getChild1().getChild2().setParent(parent.getChild1());
+        if(parent.getChild1().getChild2() != null){
+            parent.getChild1().getChild2().setParent(parent.getChild1());
+        }
     }
 
     private void movechildren1(TreeNode<E> parent) {
