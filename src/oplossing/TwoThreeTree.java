@@ -235,74 +235,137 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
         return false;
     }
 
-    private void delbalance(TreeNode<E> parent) {
+    private void delbalance(TreeNode<E> parent) { //TODO: if problem node is empty and not null move children correctly
         if (subtreesize(parent) == 6){
             if (parent.getChild1() == null || parent.getChild1().isEmpty()){
-                parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
-                parent.setKey1(parent.getChild2().getKey1());
-                parent.getChild2().setKey1(parent.getChild2().getKey2());
-                parent.getChild2().setKey2(null);
+                setchild1(parent);
+                movechildren1(parent);
 
             } else if (parent.getChild2() == null || parent.getChild2().isEmpty()){
-                parent.setChild2(new TreeNode<>(parent, parent.getKey1()));
-                parent.setKey1(parent.getChild1().getKey2());
-                parent.getChild1().setKey2(null);
+                setchild2(parent);
+                parent.getChild1().setChild3(null);
+                parent.getChild2().getChild1().setParent(parent.getChild2());
             } else {
-                parent.setChild3(new TreeNode<>(parent, parent.getKey2()));
+                setchild3(parent);
+                parent.getChild2().setChild3(null);
+                parent.getChild3().getChild1().setParent(parent.getChild3());
                 parent.setKey2(parent.getChild2().getKey2());
                 parent.getChild2().setKey2(null);
             }
         } else if (subtreesize(parent) == 5){
             if (parent.getChild2() != null && parent.getChild2().size() == 2){
                 if (parent.getChild1() == null || parent.getChild1().isEmpty()){
-                    parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
+                    setchild1(parent);
+                    parent.getChild2().setChild1(parent.getChild2().getChild2());
+                    parent.getChild2().setChild2(parent.getChild2().getChild3());
+                    parent.getChild2().setChild3(null);
                     parent.setKey2(parent.getChild2().getKey1());
                     parent.getChild2().setKey1(parent.getChild2().getKey2());
                     parent.getChild2().setKey2(null);
                 } else {
-                    parent.setChild3(new TreeNode<>(parent, parent.getKey2()));
+                    setchild3(parent);
+                    if(parent.getChild3().getChild1() !=null){
+                        parent.getChild3().getChild1().setParent(parent.getChild3());
+                    }
+                    parent.getChild2().setChild3(null);
                     parent.setKey2(parent.getChild2().getKey2());
                     parent.getChild2().setKey2(null);
                 }
-            } else {
-                if (parent.getChild1() != null && parent.getChild1().size() == 2){
+            } else { //scenario with no double node in the middle
+                if (parent.getChild1() != null && parent.getChild1().size() == 2){ //double node is first child
                     if (parent.getChild2() == null || parent.getChild2().isEmpty()){
-                        parent.setChild2(new TreeNode<>(parent, parent.getKey2()));
-                        parent.getChild2().setKey2(parent.getChild3().getKey1());
-                        parent.setKey2(null);
-                        parent.setChild3(null);
+                        setchild2(parent);
+                        if(parent.getChild2().getChild1() !=null){
+                            parent.getChild2().getChild1().setParent(parent.getChild2());
+                        }
+                        parent.getChild1().setChild3(null);
                     } else {
-                        parent.getChild2().setKey2(parent.getKey2());
-                        parent.setKey2(null);
+                        if(parent.getChild3()!= null){
+                            parent.getChild3().setKey1(parent.getKey2());
+                        } else {
+                            parent.setChild3(new TreeNode<>(parent, parent.getKey2()));
+                        }
+                        parent.setKey2(parent.getChild2().getKey1());
+                        parent.getChild3().setChild2(parent.getChild3().getChild1());
+                        parent.getChild3().setChild1(parent.getChild2().getChild2());
+                        parent.getChild2().setChild2(parent.getChild2().getChild1());
+                        parent.getChild2().setChild1(parent.getChild1().getChild3());
+                        if(parent.getChild3().getChild1() !=null){
+                            parent.getChild3().getChild1().setParent(parent.getChild3());
+                            parent.getChild2().getChild1().setParent(parent.getChild2());
+                        }
+                        parent.getChild2().setKey1(parent.getKey1());
+                        parent.setKey1(parent.getChild1().getKey2());
+                        parent.getChild1().setKey2(null);
+                        parent.getChild1().setChild3(null);
                     }
-                } else {
+                } else { //3rd node is double node
                     if (parent.getChild2() == null || parent.getChild2().isEmpty()){
-                        parent.getChild1().setKey2(parent.getKey1());
-                        parent.setKey1(parent.getKey2());
-                        parent.setChild2(parent.getChild3());
-                        parent.setChild3(null);
+                        if(parent.getChild2() != null){
+                            parent.getChild2().setKey1(parent.getKey2());
+                        } else {
+                            parent.setChild2(new TreeNode<>(parent,parent.getKey2()));
+                        }
+                        parent.getChild2().setChild2(parent.getChild3().getChild1());
+                        if(parent.getChild2().getChild2() != null){
+                            parent.getChild2().getChild2().setParent(parent.getChild2());
+                        }
                     } else {
-                        parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
-                        parent.getChild1().setKey2(parent.getChild2().getKey1());
-                        parent.setKey1(parent.getKey2());
-                        parent.setChild2(parent.getChild3());
-                        parent.setChild3(null);
-                        parent.setKey2(null);
+                        if(parent.getChild1() != null){
+                            parent.getChild1().setKey1(parent.getKey1());
+                        } else {
+                            parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
+                        }
+                        parent.getChild1().setChild2(parent.getChild2().getChild1());
+                        parent.setKey1(parent.getChild2().getKey1());
+                        parent.getChild2().setChild1(parent.getChild2().getChild2());
+                        parent.getChild2().setKey1(parent.getKey2());
+                        parent.getChild2().setChild2(parent.getChild3().getChild1());
+                        if(parent.getChild1().getChild1() != null){
+                            parent.getChild1().getChild2().setParent(parent.getChild1());
+                            parent.getChild2().getChild2().setParent(parent.getChild2());
+                        }
                     }
+                    parent.setKey2(parent.getChild3().getKey1());
+                    parent.getChild3().setKey1(parent.getChild3().getKey2());
+                    parent.getChild3().setKey2(null);
+                    parent.getChild3().setChild1(parent.getChild3().getChild2());
+                    parent.getChild3().setChild2(parent.getChild3().getChild3());
+                    parent.getChild3().setChild3(null);
                 }
             }
         } else if (subtreesize(parent) == 4){ //TODO: implement subtrees 4-2(recursion for 2tree)
             if (parent.getChild3() == null || parent.getChild3().isEmpty()){
                 parent.getChild2().setKey2(parent.getKey2());
                 parent.setKey2(null);
+                if(parent.getChild3() != null){
+                    parent.getChild2().setChild3(parent.getChild3().getChild1());
+                    parent.getChild2().getChild3().setParent(parent.getChild2());
+                    parent.setChild3(null);
+                }
             } else if (parent.getChild2() == null || parent.getChild2().isEmpty()){
                 parent.getChild1().setKey2(parent.getKey1());
                 parent.setKey1(parent.getKey2());
+                if(parent.getChild2() != null){
+                    parent.getChild1().setChild3(parent.getChild2().getChild1());
+                    parent.getChild1().getChild3().setParent(parent.getChild1());
+                }
                 parent.setChild2(parent.getChild3());
                 parent.setChild3(null);
+                parent.setKey2(null);
             } else {
-                parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
+                if(parent.getChild1() != null){
+                    parent.getChild1().setKey1(parent.getKey1());
+                } else {
+                    parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
+                }
                 parent.getChild1().setKey2(parent.getChild2().getKey1());
+                parent.getChild1().setChild2(parent.getChild2().getChild1());
+                parent.getChild1().setChild3(parent.getChild2().getChild2());
+                if(parent.getChild1().getChild2() != null){
+                    parent.getChild1().getChild2().setParent(parent.getChild1());
+                    parent.getChild1().getChild3().setParent(parent.getChild1());
+                }
                 parent.setChild2(parent.getChild3());
                 parent.setKey1(parent.getKey2());
                 parent.setKey2(null);
@@ -310,7 +373,7 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
             }
         } else if (subtreesize(parent) == 3){
             if (parent.getChild2() == null || parent.getChild2().isEmpty()){
-                if (parent.getChild2().isEmpty()){
+                if (parent.getChild2() != null){
                     parent.getChild2().setKey1(parent.getKey1());
                     parent.getChild2().setChild1(parent.getChild1().getChild3());
                     parent.getChild1().setChild3(null);
@@ -330,12 +393,7 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                 } else {
                     parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
                 }
-                parent.setKey1(parent.getChild2().getKey1());
-                parent.getChild2().setKey1(parent.getChild2().getKey2());
-                parent.getChild2().setKey2(null);
-                parent.getChild2().setChild1(parent.getChild2().getChild2());
-                parent.getChild2().setChild2(parent.getChild2().getChild3());
-                parent.getChild2().setChild3(null);
+                movechildren1(parent);
             }
         } else { //subtree is size 2 --> problem because size of balanced tree is smaller
             if (parent.getChild2() == null || parent.getChild2().isEmpty()){
@@ -369,6 +427,47 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                 delbalance(parent.getParent());
             }
         }
+    }
+
+    private void setchild3(TreeNode<E> parent) {
+        if(parent.getChild3()!= null){
+            parent.getChild3().setKey1(parent.getKey2());
+        }else {
+            parent.setChild3(new TreeNode<>(parent, parent.getKey2()));
+        }
+        parent.getChild3().setChild2(parent.getChild3().getChild1());
+        parent.getChild3().setChild1(parent.getChild2().getChild3());
+    }
+
+    private void setchild2(TreeNode<E> parent) {
+        if(parent.getChild2() != null){
+            parent.getChild2().setKey1(parent.getKey1());
+        } else {
+            parent.setChild2(new TreeNode<>(parent, parent.getKey1()));
+        }
+        parent.setKey1(parent.getChild1().getKey2());
+        parent.getChild1().setKey2(null);
+        parent.getChild2().setChild2(parent.getChild2().getChild1());
+        parent.getChild2().setChild1(parent.getChild1().getChild3());
+    }
+
+    private void setchild1(TreeNode<E> parent) {
+        if(parent.getChild1() != null){
+            parent.getChild1().setKey1(parent.getKey1());
+        } else {
+            parent.setChild1(new TreeNode<>(parent, parent.getKey1()));
+        }
+        parent.getChild1().setChild2(parent.getChild2().getChild1());
+        parent.getChild1().getChild2().setParent(parent.getChild1());
+    }
+
+    private void movechildren1(TreeNode<E> parent) {
+        parent.setKey1(parent.getChild2().getKey1());
+        parent.getChild2().setKey1(parent.getChild2().getKey2());
+        parent.getChild2().setKey2(null);
+        parent.getChild2().setChild1(parent.getChild2().getChild2());
+        parent.getChild2().setChild2(parent.getChild2().getChild3());
+        parent.getChild2().setChild3(null);
     }
 
     private int subtreesize(TreeNode<E> root) {

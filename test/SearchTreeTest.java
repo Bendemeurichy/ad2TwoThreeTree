@@ -2,6 +2,7 @@ import opgave.SearchTree;
 import opgave.samplers.Sampler;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Time;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,10 +57,10 @@ public interface SearchTreeTest {
     default void removeMultiple() {
         SearchTree<Integer>tree = createTree();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             assertTrue(tree.add(i), String.format("should change when adding %d", i));
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1000; i++) {
             assertTrue(tree.contains(i), String.format("should contain %d", i));
             assertTrue(tree.remove(i), String.format("should change when removing %d", i));
             assertFalse(tree.contains(i), String.format("should not contain %d anymore", i));
