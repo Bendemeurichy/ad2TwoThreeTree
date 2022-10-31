@@ -34,7 +34,6 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
             return searchFrom(start.getChild3(), goal);
         }
         return null;
-
     }
 
     @Override
@@ -137,23 +136,23 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                 nroot.setChild2(new TreeNode<>(nroot, node.getKey2()));
                 nroot.setChild1(new TreeNode<>(nroot, node.getKey1()));
             }
-            if (nroot.isRoot()){
-                root = nroot;
-            } else {
                 balance(nroot);
-            }
         }
     }
 
     //recursive balancing function, rebalance 2-3 tree untill parent of size 1 or new root, very compute heavy
     private void balance(TreeNode<E> replaceRoot) {
-        if (replaceRoot.getParent().size() == 1){
+        if(replaceRoot.isRoot()){
+            root=replaceRoot;
+        } else if (replaceRoot.getParent().size() == 1){
             if (replaceRoot.getKey1().compareTo(replaceRoot.getParent().getKey1()) < 0){
                 replaceRoot.getParent().setKey2(replaceRoot.getParent().getKey1());
                 replaceRoot.getParent().setKey1(replaceRoot.getKey1());
                 replaceRoot.getParent().setChild3(replaceRoot.getParent().getChild2());
                 replaceRoot.getParent().setChild1(replaceRoot.getChild1());
                 replaceRoot.getParent().setChild2(replaceRoot.getChild2());
+                replaceRoot.getParent().getChild1().setParent(replaceRoot.getParent());
+                replaceRoot.getParent().getChild2().setParent(replaceRoot.getParent());
             } else {
                 replaceRoot.getParent().setKey2(replaceRoot.getKey1());
                 replaceRoot.getParent().setChild2(replaceRoot.getChild1());
@@ -161,6 +160,7 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                 replaceRoot.getChild1().setParent(replaceRoot.getParent());
                 replaceRoot.getChild2().setParent(replaceRoot.getParent());
                 replaceRoot.getParent().getChild3().setParent(replaceRoot.getParent());
+                replaceRoot.getParent().getChild2().setParent(replaceRoot.getParent());
             }
         } else {
             TreeNode<E> nroot;
@@ -194,13 +194,12 @@ public class TwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
                 lchild.setChild2(replaceRoot.getChild1());
                 rchild.setChild1(replaceRoot.getChild2());
                 rchild.setChild2(replaceRoot.getParent().getChild3());
-                replaceRoot.setParent(nroot);
+                lchild.getChild1().setParent(lchild);
+                lchild.getChild2().setParent(lchild);
+                rchild.getChild2().setParent(rchild);
+                rchild.getChild1().setParent(rchild);
             }
-            if (nroot.isRoot()){
-                root = nroot;
-            } else {
                 balance(nroot);
-            }
         }
     }
 
