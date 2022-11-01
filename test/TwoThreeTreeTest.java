@@ -1,9 +1,12 @@
 import opgave.SearchTree;
+import opgave.samplers.Sampler;
 import oplossing.TwoThreeTree;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,5 +94,32 @@ public class TwoThreeTreeTest implements SearchTreeTest {
             a+="a";
         }
         assertIterableEquals(expected, tree);
+    }
+    @Test
+    void addRandom(){
+        SearchTree<Integer> tree = createTree();
+        Sampler random=new Sampler(new Random(),100);
+        for (Integer el:random.getElements()) {
+            assertTrue(tree.add(el));
+            assertTrue(tree.contains(el),("should contain "+ el));
+        }
+    }
+
+    @Test
+    void removeRandom(){
+        SearchTree<Integer>tree = createTree();
+
+        Sampler random = new Sampler(new Random(),1000);
+        //ArrayList<Integer> random= new ArrayList<>(Arrays.asList(3,5,6,13,0,8,16,7,10,4,18,17,14,11,15,2,19,9,1,12));
+        for (Integer el : random.getElements()) {
+            assertTrue(tree.add(el), String.format("should change when adding %d", el));
+        }
+
+        for (Integer el : random.getElements()) {
+            assertTrue(tree.contains(el), String.format("should contain %d", el));
+            assertTrue(tree.remove(el), String.format("should change when removing %d", el));
+            assertFalse(tree.contains(el), String.format("should not contain %d anymore", el));
+        }
+        assertEquals(0, tree.size(), "should be empty");
     }
 }
