@@ -4,7 +4,6 @@ import oplossing.TwoThreeTree;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -98,7 +97,7 @@ public class TwoThreeTreeTest implements SearchTreeTest {
     @Test
     void addRandom(){
         SearchTree<Integer> tree = createTree();
-        Sampler random=new Sampler(new Random(),100);
+        Sampler random=new Sampler(new Random(),1000);
         for (Integer el:random.getElements()) {
             assertTrue(tree.add(el));
             assertTrue(tree.contains(el),("should contain "+ el));

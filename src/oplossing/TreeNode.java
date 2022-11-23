@@ -1,5 +1,8 @@
 package oplossing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TreeNode<E extends Comparable<E>> {
     private TreeNode<E> parent = null;
     private E key1;
@@ -81,4 +84,23 @@ public class TreeNode<E extends Comparable<E>> {
         }
     }
 
+    public ArrayList<E> getAllKeys(){
+        ArrayList<E> keys = new ArrayList<>(List.of(key1));
+        if(key2!=null){
+            keys.add(key2);
+        }
+        return keys;
+    }
+
+    public ArrayList<TreeNode<E>> getAllChildren(){
+        ArrayList<TreeNode<E>> children = new ArrayList<>();
+        if (Child1!=null){
+            children.add(Child1);
+        } if (Child2!=null){
+            children.add(Child2);
+        } if (Child3!=null){
+            children.add(Child3);
+        }
+        return children;
+    }
 }
