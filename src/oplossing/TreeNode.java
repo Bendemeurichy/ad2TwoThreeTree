@@ -69,7 +69,7 @@ public class TreeNode<E extends Comparable<E>> {
     }
 
     public int size(){
-        return getKey2()==null?1:2;
+        return key2==null?1:2;
     }
 
     public boolean isRoot(){

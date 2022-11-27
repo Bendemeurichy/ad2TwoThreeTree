@@ -5,7 +5,7 @@ import opgave.SearchTree;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class general23Tree<E extends Comparable<E>> implements SearchTree<E> {
+public class General23Tree<E extends Comparable<E>> implements SearchTree<E> {
     protected TreeNode<E> root = null;
     protected int size=0;
 
@@ -28,7 +28,7 @@ public class general23Tree<E extends Comparable<E>> implements SearchTree<E> {
             return null;
         } else if (goal.compareTo(start.getKey1()) < 0){
             return start.getChild1()==null? null : searchFrom(start.getChild1(), goal);
-        } else if ((start.getKey2() == null || goal.compareTo(start.getKey2()) < 0)){
+        } else if ((start.size()==2 && goal.compareTo(start.getKey2()) < 0) || (start.size()==1)){
             return start.getChild2()==null? null :searchFrom(start.getChild2(), goal);
         } else if (goal.compareTo(start.getKey2()) > 0){
             return start.getChild3()==null? null : searchFrom(start.getChild3(), goal);
@@ -83,7 +83,7 @@ public class general23Tree<E extends Comparable<E>> implements SearchTree<E> {
         } else {
             node = from.getChild2();
         }
-        while (!node.isleaf()) {
+        while ((node.size()==2 && node.getChild3()!=null) || (node.size()==1 && node.getChild2()!=null)){
             node = node.size() == 2 ? node.getChild3() : node.getChild2();
         }
         if(node.size()==1){
@@ -108,15 +108,9 @@ public class general23Tree<E extends Comparable<E>> implements SearchTree<E> {
         } else {
             node = from.getChild3();
         }
-        if(node.size()==1){
             while(node.getChild1()!=null){
                 node = node.getChild1();
             }
-        } else {
-            while(node.getChild2()!=null){
-                node = node.getChild2();
-            }
-        }
         return node;
     }
 
@@ -156,12 +150,34 @@ public class general23Tree<E extends Comparable<E>> implements SearchTree<E> {
     }
 
     public void removeChild(TreeNode<E> node){
-        if(node.getParent().getChild1().equals(node)){
-            node.getParent().setChild1(null);
-        } else if(node.getParent().getChild2().equals(node)){
-            node.getParent().setChild2(null);
+        if(!node.isRoot()){
+            if (node.getParent().getChild1()!=null && node.getParent().getChild1().equals(node)){
+                node.getParent().setChild1(null);
+            } else if (node.getParent().getChild2()!=null &&node.getParent().getChild2().equals(node)){
+                node.getParent().setChild2(null);
+            } else {
+                node.getParent().setChild3(null);
+            }
         } else {
-            node.getParent().setChild3(null);
+            root = null;
+        }
+    }
+
+    public void swapChild(TreeNode<E> parent,TreeNode<E> node){
+        if(! parent.isRoot()){
+            if(parent.getParent().getChild1()!=null && parent.getParent().getChild1().equals(parent)){
+                parent.getParent().setChild1(node);
+                node.setParent(parent.getParent());
+            } else if (parent.getParent().getChild2()!=null && parent.getParent().getChild2().equals(parent)){
+                parent.getParent().setChild2(node);
+                node.setParent(parent.getParent());
+            } else {
+                parent.getParent().setChild3(node);
+                node.setParent(parent.getParent());
+            }
+        } else {
+            root=node;
+            node.setParent(null);
         }
     }
 

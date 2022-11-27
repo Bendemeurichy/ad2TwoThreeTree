@@ -1,6 +1,6 @@
 package oplossing;
 
-public class TwoThreeTree<E extends Comparable<E>> extends general23Tree<E> {
+public class TwoThreeTree<E extends Comparable<E>> extends General23Tree<E> {
     @Override
     public boolean contains(E o) {
         return search(o) != null;
