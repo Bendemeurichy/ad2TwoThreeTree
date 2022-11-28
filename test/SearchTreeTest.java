@@ -7,7 +7,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public interface SearchTreeTest {
-    int k=100000;
+    int k=10;
 
     SearchTree<Integer> createTree();
 

@@ -96,12 +96,18 @@ public class TwoThreeTreeTest implements SearchTreeTest {
     }
     @Test
     void addRandom(){
+        long start=System.currentTimeMillis();
         SearchTree<Integer> tree = createTree();
-        Sampler random=new Sampler(new Random(),1000);
+        Sampler random=new Sampler(new Random(),50000000);
         for (Integer el:random.getElements()) {
             assertTrue(tree.add(el));
             assertTrue(tree.contains(el),("should contain "+ el));
+
         }
+        for(Integer el: random.getElements()){
+            assertTrue(tree.contains(el),("should contain "+ el));
+        }
+        System.out.println("adding " + 50000000 + " elements to an empty tree costs " + (System.currentTimeMillis()-start));
     }
 
     @Test

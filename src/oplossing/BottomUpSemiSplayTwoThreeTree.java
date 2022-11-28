@@ -25,7 +25,6 @@ public class BottomUpSemiSplayTwoThreeTree<E extends Comparable<E>> extends Gene
             return true;
         }
         splay(collectPath(o));
-        search( o);
         return false;
     }
 
@@ -142,7 +141,7 @@ public class BottomUpSemiSplayTwoThreeTree<E extends Comparable<E>> extends Gene
         return true;
     }
 
-    private void switchKey2(E e, TreeNode<E> node) {
+    public void switchKey2(E e, TreeNode<E> node) {
         TreeNode<E> smallestR=smallestRchild(node,e);
         if(smallestR.size()==1){
             node.setKey2(smallestR.getKey1());
@@ -161,7 +160,7 @@ public class BottomUpSemiSplayTwoThreeTree<E extends Comparable<E>> extends Gene
         }
     }
 
-    private void switchKey1(E e, TreeNode<E> node) {
+    public void switchKey1(E e, TreeNode<E> node) {
         TreeNode<E> largestL=largestLchild(node,e);
         if(largestL.size()==1){
             node.setKey1(largestL.getKey1());
