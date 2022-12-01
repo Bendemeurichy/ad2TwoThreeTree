@@ -1,8 +1,16 @@
 package oplossing;
 
-import java.util.Stack;
+import opgave.SearchTree;
+import opgave.samplers.Sampler;
+import opgave.samplers.ZipfSampler;
 
-public class BottomUpSemiSplayTwoThreeTree<E extends Comparable<E>> extends General23Tree<E> {
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+public class BottomUpSemiSplayTwoThreeTree<E extends Comparable<E>> implements SearchTree<E> {
+    Stack<TreeNode<E>> currentPath = new Stack<>();
     @Override
     public boolean contains(E o) {
         if (root == null){
@@ -459,7 +467,7 @@ public class BottomUpSemiSplayTwoThreeTree<E extends Comparable<E>> extends Gene
     }
 
     public Stack<TreeNode<E>> collectPath(E o){
-        Stack<TreeNode<E>> currentPath = new Stack<>();
+        currentPath.clear();
         boolean found = false;
         TreeNode<E> current = root;
 
@@ -494,4 +502,241 @@ public class BottomUpSemiSplayTwoThreeTree<E extends Comparable<E>> extends Gene
         return currentPath;
     }
 
+    protected TreeNode<E> root = null;
+    protected int size=0;
+
+    public TreeNode<E> search(E o) {
+        if (root == null){
+            return null;
+        }
+        return searchFrom(root, o);
+    }
+
+    //extra method for search with starting point
+    public TreeNode<E> searchFrom(TreeNode<E> start, E goal) {
+        if (start.getKey1().equals(goal)){
+            return start;
+        }
+        if(start.size()==2 && start.getKey2().equals(goal)){
+            return start;
+        }
+        if (start.isleaf()){
+            return null;
+        } else if (goal.compareTo(start.getKey1()) < 0){
+            return start.getChild1()==null? null : searchFrom(start.getChild1(), goal);
+        } else if ((start.size()==2 && goal.compareTo(start.getKey2()) < 0) || (start.size()==1)){
+            return start.getChild2()==null? null :searchFrom(start.getChild2(), goal);
+        } else if (goal.compareTo(start.getKey2()) > 0){
+            return start.getChild3()==null? null : searchFrom(start.getChild3(), goal);
+        }
+        return null;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return root == null;
+    }
+
+
+    public TreeNode<E> largestLchild(TreeNode<E> from,E toRemove) {
+        if (from.isleaf()){
+            return from;
+        }
+        TreeNode<E> node;
+        if(toRemove.equals(from.getKey1())){
+            node = from.getChild1();
+        } else {
+            node = from.getChild2();
+        }
+        while ((node.size()==2 && node.getChild3()!=null) || (node.size()==1 && node.getChild2()!=null)){
+            node = node.size() == 2 ? node.getChild3() : node.getChild2();
+        }
+        if(node.size()==1){
+            while(node.getChild2()!=null){
+                node = node.getChild2();
+            }
+        } else {
+            while(node.getChild3()!=null){
+                node = node.getChild3();
+            }
+        }
+        return node;
+    }
+
+    public TreeNode<E> smallestRchild(TreeNode<E> from, E toRemove){
+        if (from.isleaf()){
+            return from;
+        }
+        TreeNode<E> node;
+        if(toRemove.equals(from.getKey1())){
+            node = from.getChild2();
+        } else {
+            node = from.getChild3();
+        }
+        while(node.getChild1()!=null){
+            node = node.getChild1();
+        }
+        return node;
+    }
+
+    @Override
+    public void clear() {
+        root = null;
+    }
+
+    @Override
+    //use "depth first search" to put elements in arraylist -> return iterator of arraylist
+    public Iterator<E> iterator() {
+        return dfs(root, new ArrayList<>()).iterator();
+    }
+
+    public ArrayList<E> dfs(TreeNode<E> n, ArrayList<E> keylist) {
+        if (n.isleaf()){
+            keylist.add(n.getKey1());
+            if (n.getKey2() != null){
+                keylist.add(n.getKey2());
+            }
+        } else {
+            if (n.getChild1()!=null){
+                dfs(n.getChild1(), keylist);
+            }
+            keylist.add(n.getKey1());
+            if (n.getChild2()!=null){
+                dfs(n.getChild2(), keylist);
+            }
+            if (n.size() == 2){
+                keylist.add(n.getKey2());
+                if (n.getChild3()!=null){
+                    dfs(n.getChild3(), keylist);
+                }
+            }
+        }
+        return keylist;
+    }
+
+    public void removeChild(TreeNode<E> node){
+        if(!node.isRoot()){
+            if (node.getParent().getChild1()!=null && node.getParent().getChild1().equals(node)){
+                node.getParent().setChild1(null);
+            } else if (node.getParent().getChild2()!=null &&node.getParent().getChild2().equals(node)){
+                node.getParent().setChild2(null);
+            } else {
+                node.getParent().setChild3(null);
+            }
+        } else {
+            root = null;
+        }
+    }
+
+    public void swapChild(TreeNode<E> parent,TreeNode<E> node){
+        if(! parent.isRoot()){
+            if(parent.getParent().getChild1()!=null && parent.getParent().getChild1().equals(parent)){
+                parent.getParent().setChild1(node);
+                node.setParent(parent.getParent());
+            } else if (parent.getParent().getChild2()!=null && parent.getParent().getChild2().equals(parent)){
+                parent.getParent().setChild2(node);
+                node.setParent(parent.getParent());
+            } else {
+                parent.getParent().setChild3(node);
+                node.setParent(parent.getParent());
+            }
+        } else {
+            root=node;
+            node.setParent(null);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter addNormal = new BufferedWriter(new FileWriter("extra/BottomUpBenchAddNormal.csv"));
+        BufferedWriter removeNormal = new BufferedWriter(new FileWriter("extra/BottomUpBenchRemoveNormal.csv"));
+        BufferedWriter addZipf = new BufferedWriter(new FileWriter("extra/BottomUpBenchAddZipf.csv"));
+        BufferedWriter removeZipf = new BufferedWriter(new FileWriter("extra/BottomUpBenchRemoveZipf.csv"));
+        BufferedWriter searchNormal = new BufferedWriter(new FileWriter("extra/BottomUpBenchSearchNormal.csv"));
+        BufferedWriter searchZipf = new BufferedWriter(new FileWriter("extra/BottomUpBenchSearchZipf.csv"));
+        Random rand = new Random();
+
+        BottomUpSemiSplayTwoThreeTree<Integer> tree = new BottomUpSemiSplayTwoThreeTree<>();
+
+        int size = 1000;
+        int testsize = 100;
+
+        for(int i =0;i<testsize;i++){
+            addNormal.append(String.valueOf(size + i * 1000)).append(",");
+            removeNormal.append(String.valueOf(size + i * 1000)).append(",");
+            addZipf.append(String.valueOf(size + i * 1000)).append(",");
+            removeZipf.append(String.valueOf(size + i * 1000)).append(",");
+            searchNormal.append(String.valueOf(size + i * 1000)).append(",");
+            searchZipf.append(String.valueOf(size + i * 1000)).append(",");
+        }
+
+        addNormal.append("\n");
+        removeNormal.append("\n");
+        addZipf.append("\n");
+        removeZipf.append("\n");
+        searchNormal.append("\n");
+        searchZipf.append("\n");
+
+        for (int i= 0; i <testsize; i++){
+            Sampler sampler = new Sampler(rand,size);
+            ZipfSampler zipfSampler = new ZipfSampler(rand,size);
+
+            List<Integer> list = sampler.sample(size);
+            List<Integer> zipfList = zipfSampler.sample(size);
+            long startAddNormal = System.currentTimeMillis();
+            for (Integer el: list) {
+                tree.add(el);
+                tree.contains(el);
+            }
+            addNormal.append(String.valueOf(System.currentTimeMillis() - startAddNormal)).append(",");
+
+            long startSearchNormal = System.currentTimeMillis();
+            for (Integer el: list) {
+                tree.contains(el);
+            }
+            searchNormal.append(String.valueOf(System.currentTimeMillis() - startSearchNormal)).append(",");
+
+            long startRemoveNormal = System.currentTimeMillis();
+            for (Integer el: list) {
+                tree.remove(el);
+                tree.contains(el);
+            }
+            removeNormal.append(String.valueOf(System.currentTimeMillis() - startRemoveNormal)).append(",");
+
+            tree.clear();
+            long startAddZipf = System.currentTimeMillis();
+            for (Integer el: zipfList) {
+                tree.add(el);
+                tree.contains(el);
+            }
+            addZipf.append(String.valueOf(System.currentTimeMillis() - startAddZipf)).append(",");
+
+            long startSearchZipf = System.currentTimeMillis();
+            for (Integer el: zipfList) {
+                tree.contains(el);
+            }
+            searchZipf.append(String.valueOf(System.currentTimeMillis() - startSearchZipf)).append(",");
+
+            long startRemoveZipf = System.currentTimeMillis();
+            for (Integer el: zipfList) {
+                tree.remove(el);
+                tree.contains(el);
+            }
+            removeZipf.append(String.valueOf(System.currentTimeMillis() - startRemoveZipf)).append(",");
+
+
+            size+=1000;
+        }
+        addNormal.close();
+        removeNormal.close();
+        addZipf.close();
+        removeZipf.close();
+        searchNormal.close();
+        searchZipf.close();
+    }
 }
+

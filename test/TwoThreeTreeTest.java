@@ -114,8 +114,9 @@ public class TwoThreeTreeTest implements SearchTreeTest {
     void removeRandom(){
         SearchTree<Integer>tree = createTree();
 
-        Sampler random = new Sampler(new Random(),1000);
+        Sampler random = new Sampler(new Random(),50000000);
         //ArrayList<Integer> random= new ArrayList<>(Arrays.asList(3,5,6,13,0,8,16,7,10,4,18,17,14,11,15,2,19,9,1,12));
+        long start = System.currentTimeMillis();
         for (Integer el : random.getElements()) {
             assertTrue(tree.add(el), String.format("should change when adding %d", el));
         }
@@ -126,5 +127,6 @@ public class TwoThreeTreeTest implements SearchTreeTest {
             assertFalse(tree.contains(el), String.format("should not contain %d anymore", el));
         }
         assertEquals(0, tree.size(), "should be empty");
+        System.out.println(System.currentTimeMillis()-start);
     }
 }

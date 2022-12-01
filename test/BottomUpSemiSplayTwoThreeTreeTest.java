@@ -113,9 +113,11 @@ public class BottomUpSemiSplayTwoThreeTreeTest implements SearchTreeTest {
     void removeRandom(){
         SearchTree<Integer>tree = createTree();
 
-        Sampler random = new Sampler(new Random(),10000);
-        System.out.println(random.getElements());
+        Sampler random = new Sampler(new Random(),10);
+        //System.out.println(random.getElements());
         //ArrayList<Integer> random= new ArrayList<>(Arrays.asList(2, 6, 5, 3, 4, 0, 1, 9, 7, 8));
+        long start=System.currentTimeMillis();
+
         for (Integer el : random.getElements()) {
             assertTrue(tree.add(el), String.format("should change when adding %d", el));
         }
@@ -126,5 +128,6 @@ public class BottomUpSemiSplayTwoThreeTreeTest implements SearchTreeTest {
             assertFalse(tree.contains(el), String.format("should not contain %d anymore", el));
         }
         assertEquals(0, tree.size(), "should be empty");
+        System.out.println("removing " + 10000000 + " elements from a tree with " + 10000000 + " elements costs " + (System.currentTimeMillis()-start));
     }
 }
