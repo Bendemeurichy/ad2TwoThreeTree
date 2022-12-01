@@ -52,7 +52,7 @@ De vervangbomen die ik heb gebruikt zijn voor beide semi-splay bomen dezelfde:
 //TODO: teken vervangbomen
 
 ### 3. Benchmarks en performantie
-
+![bench1](addNormal.png "addNormal")
 
 
 

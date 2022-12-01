@@ -39,3 +39,5 @@ out/*
 *.doc
 *.ods
 *.xlsx
+
+extra/.obsidian/
