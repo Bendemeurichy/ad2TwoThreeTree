@@ -45,6 +45,7 @@ Het aantal toppen met 1 sleutel zal dus overeenkomen met het aantal splay-bewerk
 Het aantal splaybewerkingen komt overeen met het aantal bogen na het doorlopen van het splaypad (dit is gemakkelijk na te rekenen). 
 Omdat het aantal bogen gelijk is aan k-1 en het aantal bogen na het doorlopen van het splaypad gelijk is aan $\lceil$$\#bogen/2$$\rceil$ (lesnotas p16) zal het aantal toppen met 1 sleutel gelijk zijn aan 
 $\lceil$$(k-1)/2$$\rceil$ =$\lceil$$(k/2)-(1/2)$$\rceil$=$\lceil$$(k/2)$$\rceil$-$\lceil$$(1/2)$$\rceil$ = $\lceil$$k/2$$\rceil$ $-1$ $\blacksquare$
+<P style="page-break-before: always"></p>
 
 ### 2.  Implementaties
 
@@ -58,6 +59,8 @@ Er is gewerkt met subtrees die recursief naar boven tot in de root balanceren.
 grootte 6:![[Pasted image 20221202213000.png]]
 grootte 5:
 ![[Pasted image 20221202213331.png]] 
+<P style="page-break-before: always"></p>
+
 grootte 4:
 ![[Pasted image 20221202214213.png]]
 grootte 3:
