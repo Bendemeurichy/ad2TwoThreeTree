@@ -1,9 +1,20 @@
 # <p style= "text-align: center;"> Verslag Algdata 2 project 2022</p>
 ## <p style= "text-align: center;"> 2-3 zoekbomen</p>
 #### <p style = "text-align: center;">Ben De Meurichy</p>
-<P style="page-break-before: always"></p>
+<p style="page-break-before: always"></p>
 
 ### 1. Theoretische vragen
+#### vraag 1
+
+#### vraag 2
+Het maximaal aantal toppen met 1 sleutel in een splaypad van k toppen is gelijk aan $\lceil$$k/2$$\rceil$ $-1$
+__*bewijs:*__
+Aangezien we na elke splay-bewerking maximaal 1 top met een enkele sleutel kunnen bekomen (de gevallen met 3 sleutels en 5 sleutels in de vervangboom) volgens de gegeven definitie.
+Het aantal toppen met 1 sleutel zal dus overeenkomen met het aantal splay-bewerkingen .
+
+Het aantal splaybewerkingen komt overeen met het aantal bogen na het doorlopen van het splaypad (dit is gemakkelijk na te rekenen). 
+Omdat het aantal bogen gelijk is aan k-1 en het aantal bogen na het doorlopen van het splaypad gelijk is aan $\lceil$$\#bogen/2$$\rceil$ (lesnotas p16) zal het aantal toppen met 1 sleutel gelijk zijn aan 
+$\lceil$$(k-1)/2$$\rceil$ =$\lceil$$(k/2)-(1/2)$$\rceil$=$\lceil$$(k/2)$$\rceil$-$\lceil$$(1/2)$$\rceil$ = $\lceil$$k/2$$\rceil$ $-1$ $\blacksquare$
 
 ### 2.  Implementaties
 
@@ -13,19 +24,26 @@ Voor de gewone 2-3 zoekboom heb ik er voor gekozen om over alle mogelijke opties
 Ik heb er ook speciaal op gelet dat er zo weinig mogelijk nieuwe objecten worden aangemaakt.
 Er is gewerkt met subtrees die recursief naar boven tot in de root balanceren.
 
-*De vervangbomen die ik heb gebruikt zijn :*
-//TODO : teken vervangbomen
-grootte 6:
+*De vervangbomen die ik heb gebruikt bij probleembomen van :*
+grootte 6:![[Pasted image 20221202213000.png]]
 grootte 5:
+![[Pasted image 20221202213331.png]] 
 grootte 4:
+![[Pasted image 20221202214213.png]]
 grootte 3:
+![[Pasted image 20221202213916.png]]
 grootte 2:
+![[Pasted image 20221202213928.png]]
+*[vervangboom verplaatst het probleem naar boven in de boom waar het recursief wordt afgehandeld]*
+<P style="page-break-before: always"></p>
 
 #### Bottom Up Semi Splay 2-3 boom
 De bottomup semi splay boom is geïmplementeerd aan de hand van een stack om de nodes bij te houden die gesplayed moeten worden.
 
 Doordat toppen met 1 sleutel soms omhoog bewegen door de splay bewerking kan het soms niet mogelijk zijn om een sleutel toe te voegen in een enkele top, omdat deze niet noodzakelijk op deze plaats in de boom thuis hoort (zie voorbeeld).
-//TODO teken voorbeeld
+
+![voorbeeld problemen door "makkelijk" toevoegen enkele top](probleemToevoegen.png "voorbeeld")
+*[het toevoegen van sleutel 3 aan de enkele top lijkt makkelijk door gewoon de kindtop 2,7 uit elkaar te trekken en deze te verplaatsen maar we weten niet wat de kinderen van deze top zijn waardoor we kinderen gaan moeten verplaatsen tot aan het uiteinde van de boom in het slechtste geval. Dit is onbegonnen werk en maakt de boom enorm inefficiënt.]*
 
 Hierdoor zal de boom minder toppen met 2 sleutels bevatten en dus redelijk wat dieper zijn in het algemeen.
 Dit is denk ik de reden van het duidelijke verschil in prestatie tussen de semi splay bomen en de gewone 2-3 boom.
@@ -49,11 +67,32 @@ Om dit op te lossen heb ik een stack gebruikt met alle nodige toppen die door *s
 Tijdens het zoeken worden er toppen toegevoegd aan de stack en als deze 3 toppen groot is wordt er gesplayed.
 
 De vervangbomen die ik heb gebruikt zijn voor beide semi-splay bomen dezelfde:
-//TODO: teken vervangbomen
+Alle vervangbomen zijn een variatie op deze bomen met variërende topgroottes met de nodige logische aanpassingen (geen kind3 bij ouder grootte 1 ,...) en c een mogelijk origineel kind van een van de 3 gesplayde toppen.
+![[Pasted image 20221202223623.png]]
+<P style="page-break-before: always"></p>
 
 ### 3. Benchmarks en performantie
-![bench1](addNormal.png "addNormal")
+**Toevoegen**
+---
+![addNormal](addNormal.png "addNormal")
+![addZipf](addZipf.png "addZipf")
+<P style="page-break-before: always"></p>
 
+**Verwijderen**
+---
+![removeNormal](removeNormal.png "removeNormal;")
+![removeZipf](removeZipf.png "removeZipf")
+<P style="page-break-before: always"></p>
 
+**Opzoeken**
+---
+![searchNormal](searchNormal.png "searchNormal")
+![searchZipf](searchZipf.png "searchZipf") 
 
+**Conclusie**
+Aan de grafieken is duidelijk af te lezen dat over het algemeen de gewone 2-3 boom beter prestreert, dit ligt waarschijnlijk aan het eerder besproken probleem met de diepte van de splay bomen.
+De top down implementatie van de semi splay boom presteert iets beter dan de bottom up versie van de semi splay 2-3 boom. 
+Dit verschil is over alle operaties iets groter bij de normaalverdeling dan bij de zipf verdeling.
+De uitvoertijd bij de zipf verdeling is wel redelijk wat minder dan bij de normaalverdeling bij alle operaties, het duidelijkst zichtbaar bij het opzoeken.
 
+Het is logsich dat de top down boom iets beter is dan de bottom up omdat deze minder keer over het splaypad gaat tijdens het uitvoeren van de splaybewerkingen.
