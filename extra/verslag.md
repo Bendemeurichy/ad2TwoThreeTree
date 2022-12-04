@@ -5,6 +5,36 @@
 
 ### 1. Theoretische vragen
 #### vraag 1
+Wij gebruiken dus de potentiaalmethode. Voor een lege boom de-  
+fini ̈eren wij $Φ(T ) = 0$. Stel nu dat T niet leeg is. Voor een top v in  
+een semi-splay boom T defini ̈eren wij AT (v) (A() voor aantal) als het  
+aantal sleutels in de deelboom bestaande uit v en al zijn nakomelingen  
+in T . Bovendien zij LT (v) = log AT (v) (met L() voor logaritme). De  
+potentiaal van de hele semi-splay boom T defini ̈eren wij nu als  $Φ(T ) = \sum_{v∈T}LT (v)$ 
+De potentiaal wordt gewijzigd als een top toegevoegd wordt (nog zonder  
+de boom te herbalanceren), verwijderd wordt (zonder herbalanceren)  
+of als tijdens het herbalanceren deelbomen vervangen worden. Wij  
+zullen deze 3 delen onafhankelijk van elkaar onderzoeken. Eerst het  
+gemakkelijkste:  
+
+**Deelresultaat 1**:Als uit een blad of uit een top met 1 sleutel en 1 kind of een top met 2 sleutels en 2 kinderen een sleutel uit een  boom T wordt verwijderd en het resultaat is de boom T ′ dan geldt $Φ(T ′) ≤ Φ(T )$.  
+Hierbij bedoelen wij alleen maar het verwijderen van de top – zonder de splaybewerkingen die achteraf ook nog moeten gebeuren! Maar dan is het duidelijk omdat de aantallen van toppen in de deelbomen alleen maar kleiner kunnen worden.
+
+**Deelresultaat 2**: Als een nieuwe sleutel tot de boom T wordt toegevoegd en het resultaat is de boom T ′ dan geldt $Φ(T ′) − Φ(T ) ≤ log(|T ′|)$.  
+Ook hier hebben wij het alleen over het toevoegen zelf – zonder de  splaybewerkingen die achteraf ook nog moeten gebeuren!
+
+Als T leeg was, klopt het duidelijk, dus stel dat T niet leeg was.  
+Stel dat de toppen op het pad van de wortel naar de top met de nieuwe sleutel  
+v1, . . . , vk zijn, waarbij vk de top met de nieuwe sleutel is. Natuurlijk zijn alleen maar  
+de bijdragen van de toppen op dit pad gewijzigd – voor alle andere toppen is het aantal sleutels gelijk gebleven. Dan geldt  
+$Φ(T′) = Φ(T ) − ∑^{k−1}_{i=1} LT (vi) + ∑^{k}_{i=1}LT′(vi)$
+$= Φ(T ) + LT ′ (v1) + ∑^{k−1}_{i=1}(LT ′ (vi+1) − LT (vi))$
+Maar voor $i ≥ 1$ geldt $AT (vi) ≥ AT (vi+1) + 1 = AT ′ (vi+1)$. Dat geeft  
+$LT (vi) ≥ LT ′ (vi+1)$ en dus $LT ′ (vi+1) − LT (vi) ≤ 0$ en ten slotte  
+$Φ(T ′) ≤ Φ(T ) + LT ′ (v1) = Φ(T ) + log(|T ′|)$
+omdat de wortel natuurlijk precies $|T ′|$ opvolgers (de wortel zelf mee-geteld) heeft.
+
+**Deelresultaat 3:** 
 
 #### vraag 2
 Het maximaal aantal toppen met 1 sleutel in een splaypad van k toppen is gelijk aan $\lceil$$k/2$$\rceil$ $-1$
