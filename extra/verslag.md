@@ -35,7 +35,7 @@ $Φ(T ′) ≤ Φ(T ) + LT ′ (v1) = Φ(T ) + log(|T ′|)$
 omdat de wortel natuurlijk precies $|T ′|$ opvolgers (de wortel zelf mee-geteld) heeft.
 
 **Deelresultaat 3:** 
-
+(geen tijd meer, sorry)
 #### vraag 2
 Het maximaal aantal toppen met 1 sleutel in een splaypad van k toppen is gelijk aan $\lceil$$k/2$$\rceil$ $-1$
 __*bewijs:*__
